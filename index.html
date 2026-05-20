@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>南一六下國語補救教學測驗｜第7–9課</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --c1:#9d174d;--c1l:#fdf2f8;   /* 改錯字 玫紅 */
+  --c2:#1d4ed8;--c2l:#eff6ff;   /* 閱讀 藍 */
+  --c3:#92400e;--c3l:#fef3c7;   /* 成語 金 */
+  --pur:#5b21b6;--purl:#f5f3ff; /* 主色 紫 */
+  --green:#178a56;--greenl:#e7f6ef;
+  --red:#c82828;--redl:#fdeaea;
+  --amber:#b87010;--amberl:#fdf3e0;
+  --gray:#4e5a6a;--grayl:#f4f6f9;--graym:#dde2ea;
+  --text:#1a2130;--texts:#4e5a6a;--texth:#8a96a6;
+  --white:#fff;--r:14px;--rs:10px;
+  --sh:0 2px 12px rgba(0,0,0,.08);
+}
+html,body{min-height:100%;font-family:'Noto Sans TC',sans-serif;background:#f8f5ff;color:var(--text);font-size:16px;line-height:1.65;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+.bar{display:flex;align-items:center;gap:12px;padding:13px 18px;box-shadow:0 2px 10px rgba(0,0,0,.18);position:sticky;top:0;z-index:50}
+.bar-m{background:linear-gradient(135deg,#3b0764,#7c3aed)}
+.bar-r{background:linear-gradient(135deg,#0d2460,#1d4ed8)}
+.bar-t{background:linear-gradient(135deg,#052e16,#166534)}
+.bar .icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.bar .ttl{color:#fff;font-size:15px;font-weight:700}
+.bar .sub{color:rgba(255,255,255,.7);font-size:11.5px;margin-top:1px}
+.bar .f1{flex:1}
+.bk{background:none;border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-family:'Noto Sans TC',sans-serif;cursor:pointer}
+
+/* WELCOME */
+#sw .body{flex:1;padding:18px 16px 30px;display:flex;flex-direction:column;align-items:center;gap:16px;max-width:560px;margin:0 auto;width:100%}
+.wc{background:var(--white);border-radius:var(--r);padding:22px 20px;width:100%;box-shadow:var(--sh)}
+.wc h2{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;margin-bottom:5px}
+.wc .desc{font-size:13.5px;color:var(--texts);margin-bottom:16px;line-height:1.8}
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
+.sgc{padding:10px 12px;border-radius:10px}
+.sgc .sgt{font-size:11px;font-weight:500;margin-bottom:2px;opacity:.8}
+.sgc .sgp{font-size:15px;font-weight:900}
+label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margin-bottom:5px}
+.inp{width:100%;padding:12px 14px;border:1.5px solid var(--graym);border-radius:var(--rs);font-size:16px;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;margin-bottom:12px}
+.inp:focus{border-color:var(--pur)}
+.inpr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bgo{width:100%;padding:15px;background:linear-gradient(135deg,#3b0764,#7c3aed);color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:900;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:1px}
+.bgo:active{opacity:.85}
+.tl{background:none;border:none;color:var(--texth);font-size:12px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;text-decoration:underline;margin-top:6px;display:block;text-align:center}
+.qrc{background:var(--white);border-radius:var(--r);padding:18px;width:100%;box-shadow:var(--sh);text-align:center}
+.qrc p{font-size:13px;color:var(--texts);margin-bottom:12px;font-weight:500}
+.qrc small{display:block;font-size:10px;color:var(--texth);margin-top:8px;word-break:break-all}
+
+/* EXAM */
+#se .body{flex:1;padding:16px;max-width:720px;margin:0 auto;width:100%}
+.secb{background:var(--white);border-radius:var(--r);margin-bottom:18px;box-shadow:var(--sh);overflow:hidden}
+.sech{padding:13px 18px;display:flex;align-items:center;gap:10px}
+.sech .si{font-size:20px}
+.sech .st{font-size:15px;font-weight:900}
+.sech .ss{font-size:12px;opacity:.8;margin-top:1px}
+.secbd{padding:15px 18px}
+
+/* 改錯字 */
+.typass{font-family:'Noto Serif TC',serif;font-size:14.5px;line-height:2.3;color:var(--text);margin-bottom:16px;padding:14px 16px;background:var(--grayl);border-radius:10px;border-left:4px solid var(--c1)}
+.typass p{margin-bottom:.85em}
+
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ti{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--grayl);border-radius:8px}
+.tn{font-size:13px;font-weight:700;color:var(--c1);white-space:nowrap;min-width:88px}
+.ti2{flex:1;padding:7px 10px;border:1.5px solid var(--graym);border-radius:6px;font-size:17px;font-family:'Noto Serif TC',serif;background:var(--white);outline:none;transition:border-color .2s;width:60px;text-align:center}
+.ti2:focus{border-color:var(--c1)}
+
+/* 選擇題 */
+.qb{margin-bottom:13px;padding:13px 15px;border-radius:10px;border:1.5px solid var(--graym)}
+.qb.done{border-color:var(--pur)}
+.qn{font-size:12px;font-weight:700;margin-bottom:5px}
+.qt{font-size:14.5px;line-height:1.85;margin-bottom:10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ob{padding:9px 11px;border:1.5px solid var(--graym);border-radius:8px;background:var(--white);cursor:pointer;font-size:13px;font-family:'Noto Sans TC',sans-serif;color:var(--text);text-align:left;transition:all .15s;display:flex;align-items:flex-start;gap:5px;width:100%}
+.ob .ol{font-weight:700;flex-shrink:0;font-size:12.5px;min-width:20px}
+.ob:hover{border-color:var(--pur);background:var(--purl)}
+.ob.sel{border-color:var(--pur);background:var(--purl);font-weight:700}
+.ob.dim{pointer-events:none;opacity:.5}
+
+/* 提交 */
+.subw{padding:0 16px 30px;max-width:720px;margin:0 auto;width:100%}
+.subb{width:100%;padding:16px;background:linear-gradient(135deg,#3b0764,#7c3aed);color:#fff;border:none;border-radius:var(--rs);font-size:17px;font-weight:900;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:1px}
+
+/* RESULT */
+#sr .body{flex:1;padding:14px;max-width:720px;margin:0 auto;width:100%}
+.hero{background:var(--white);border-radius:var(--r);padding:22px 18px;box-shadow:var(--sh);margin-bottom:14px;text-align:center}
+.srg{width:110px;height:110px;border-radius:50%;margin:0 auto 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid;font-weight:700}
+.srg .big{font-size:36px;line-height:1}
+.srg .sm{font-size:11px;margin-top:2px;opacity:.75}
+.rh{border-color:var(--green);color:var(--green);background:var(--greenl)}
+.rm{border-color:var(--amber);color:var(--amber);background:var(--amberl)}
+.rl{border-color:var(--red);color:var(--red);background:var(--redl)}
+.hero h2{font-size:16px;font-weight:900;margin-bottom:3px}
+.hero p{font-size:13px;color:var(--texts)}
+.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+.s3b{background:var(--grayl);border-radius:8px;padding:10px;text-align:center}
+.s3b .sv{font-size:19px;font-weight:900}
+.s3b .sl{font-size:10px;color:var(--texth);margin-top:2px}
+.rh2{font-size:14px;font-weight:900;margin:13px 0 7px 2px;display:flex;align-items:center;gap:7px}
+.rh2::before{content:'';width:4px;height:15px;border-radius:2px;display:inline-block}
+.rc{background:var(--white);border-radius:var(--r);padding:13px 15px;box-shadow:var(--sh);margin-bottom:10px}
+.ri{padding:8px 0;border-bottom:1px solid var(--graym);font-size:13px;line-height:1.7}
+.ri:last-child{border-bottom:none}
+.riq{margin-bottom:4px}
+.ria{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:3px}
+.tok{background:var(--greenl);color:var(--green);padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.tng{background:var(--redl);color:var(--red);padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.tpt{background:var(--grayl);color:var(--gray);padding:2px 8px;border-radius:20px;font-size:11px}
+.rex{font-size:12px;color:var(--texts);margin-top:3px;padding-top:4px;border-top:1px dashed var(--graym);line-height:1.65}
+.br{display:flex;gap:10px;margin:13px 0 28px}
+.b2a{flex:1;padding:12px;border:2px solid var(--pur);background:var(--white);color:var(--pur);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer}
+.b2b{flex:1;padding:12px;background:linear-gradient(135deg,#3b0764,#7c3aed);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer}
+.fbs{font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:10px}
+.fbs.ok{background:var(--greenl);color:var(--green)}
+.fbs.err{background:var(--redl);color:var(--red)}
+
+/* TEACHER */
+#st .body{flex:1;padding:14px;max-width:760px;margin:0 auto;width:100%}
+.tc{background:var(--white);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);margin-bottom:12px}
+.tc h3{font-size:14px;font-weight:900;color:var(--pur);margin-bottom:12px}
+.tf{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.tf select{padding:7px 10px;border:1.5px solid var(--graym);border-radius:8px;font-size:13px;font-family:'Noto Sans TC',sans-serif;outline:none;background:var(--white)}
+.tf select:focus{border-color:var(--pur)}
+.tf button{padding:7px 14px;background:var(--pur);color:#fff;border:none;border-radius:8px;font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;font-weight:700}
+.srr{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--graym)}
+.srr:last-of-type{border-bottom:none}
+.av{width:36px;height:36px;border-radius:50%;background:var(--purl);color:var(--pur);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.si3{flex:1}.si3 .nm{font-size:14px;font-weight:700}.si3 .mt{font-size:11.5px;color:var(--texts)}
+.bdg{padding:4px 11px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap}
+.emp{text-align:center;padding:26px;color:var(--texth);font-size:13px}
+.tst{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin-bottom:12px}
+.tsb{background:var(--grayl);border-radius:8px;padding:11px;text-align:center}
+.tsb .sv{font-size:20px;font-weight:900;color:var(--pur)}
+.tsb .sl{font-size:11px;color:var(--texth);margin-top:2px}
+.wb{margin-bottom:12px}
+.wbr{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px}
+.wbb{height:8px;background:var(--graym);border-radius:4px;overflow:hidden}
+.wbf{height:8px;border-radius:4px}
+.rmb{padding:11px 13px;background:var(--amberl);border-radius:8px;font-size:13px;color:var(--amber);line-height:1.75;margin-bottom:8px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--graym);border-top-color:var(--pur);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.bclr{background:none;border:1.5px solid var(--red);color:var(--red);padding:7px 14px;border-radius:8px;font-size:12px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;margin-top:10px}
+#slogin .body{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.lc{background:var(--white);border-radius:var(--r);padding:28px 24px;width:100%;max-width:340px;box-shadow:var(--sh);text-align:center}
+.lc h2{font-size:18px;font-weight:900;margin-bottom:5px}
+.lc p{font-size:13px;color:var(--texts);margin-bottom:18px}
+@media(max-width:480px){.opts,.tg,.s3,.sg{grid-template-columns:1fr}.s3{grid-template-columns:1fr 1fr}}
+@media print{.bar,.br,.bgo,.bk,.tl,.qrc,.subw{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<!-- 歡迎頁 -->
+<div id="sw" class="screen active">
+  <div class="bar bar-m">
+    <div class="icon">📖</div>
+    <div class="f1"><div class="ttl">南一六下國語補救教學測驗</div><div class="sub">第7–9課｜改錯字＋閱讀＋成語</div></div>
+  </div>
+  <div class="body">
+    <div class="wc">
+      <h2>📚 補救教學測驗</h2>
+      <p class="desc">本測驗針對南一版六下第7至9課核心語詞，共三大題，滿分 <b>100 分</b>。請依序作答，全部完成後再提交。</p>
+      <div class="sg">
+        <div class="sgc" style="background:#fdf2f8;color:#9d174d"><div class="sgt">一、改錯字</div><div class="sgp">60分 <span style="font-size:10px;font-weight:400">（20題×3分）</span></div></div>
+        <div class="sgc" style="background:#eff6ff;color:#1d4ed8"><div class="sgt">二、閱讀測驗</div><div class="sgp">10分 <span style="font-size:10px;font-weight:400">（5題×2分）</span></div></div>
+        <div class="sgc" style="background:#fef3c7;color:#92400e"><div class="sgt">三、成語測驗</div><div class="sgp">30分 <span style="font-size:10px;font-weight:400">（10題×3分）</span></div></div>
+      </div>
+      <div class="inpr">
+        <div>
+          <label class="fl">班級</label>
+          <select class="inp" id="icls" style="appearance:none">
+            <option value="">請選擇班級</option>
+            <option>六年一班</option><option>六年二班</option><option>六年三班</option>
+            <option>六年四班</option><option>六年五班</option><option>六年六班</option>
+            <option>六年七班</option><option>六年八班</option><option>六年九班</option>
+            <option>六年十班</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl">座號</label>
+          <input class="inp" id="iseat" type="number" placeholder="座號" min="1" max="40">
+        </div>
+      </div>
+      <button class="bgo" onclick="startExam()">開始測驗 →</button>
+      <button class="tl" onclick="go('slogin')">教師成績管理 / 查閱記錄</button>
+    </div>
+    <div class="qrc">
+      <p>📱 掃描 QR Code 直接進入施測</p>
+      <div id="qrbox"></div>
+      <small id="qrurl"></small>
+    </div>
+  </div>
+</div>
+
+<!-- 考試頁 -->
+<div id="se" class="screen">
+  <div class="bar bar-m">
+    <div class="icon">✍️</div>
+    <div class="f1"><div class="ttl">南一六下國語補救教學測驗</div><div class="sub" id="exam-info">請依序作答所有題目</div></div>
+  </div>
+  <div class="body" id="exam-body"></div>
+  <div class="subw"><button class="subb" onclick="submitExam()">📋 提交測驗並查看成績</button></div>
+</div>
+
+<!-- 結果頁 -->
+<div id="sr" class="screen">
+  <div class="bar bar-r">
+    <div class="icon">📊</div>
+    <div class="f1"><div class="ttl">測驗結果報告</div><div class="sub" id="r-name"></div></div>
+  </div>
+  <div class="body">
+    <div id="upst" style="display:none" class="fbs ok"></div>
+    <div class="hero">
+      <div class="srg" id="sring"><div class="big" id="snum"></div><div class="sm">分</div></div>
+      <h2 id="smsg"></h2><p id="ssub"></p>
+      <div class="s3">
+        <div class="s3b"><div class="sv" id="r1" style="color:#9d174d"></div><div class="sl">改錯字</div></div>
+        <div class="s3b"><div class="sv" id="r2" style="color:#1d4ed8"></div><div class="sl">閱讀測驗</div></div>
+        <div class="s3b"><div class="sv" id="r3" style="color:#92400e"></div><div class="sl">成語測驗</div></div>
+      </div>
+    </div>
+    <div id="r-detail"></div>
+    <div class="br">
+      <button class="b2a" onclick="window.print()">🖨 列印報告</button>
+      <button class="b2b" onclick="resetAll()">重新作答</button>
+    </div>
+  </div>
+</div>
+
+<!-- 教師登入 -->
+<div id="slogin" class="screen">
+  <div class="bar bar-m">
+    <div class="icon">🔐</div>
+    <div class="f1" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="ttl">教師登入</div>
+      <button class="bk" onclick="go('sw')">← 返回</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="lc">
+      <h2>👩‍🏫 教師專區</h2>
+      <p>請輸入密碼以查看全班成績及補救分析</p>
+      <input class="inp" id="t-pwd" type="password" placeholder="請輸入密碼" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="bgo" onclick="doLogin()">進入教師看板</button>
+      <div id="lerr" style="display:none;margin-top:10px;font-size:13px;color:var(--red);text-align:center">❌ 密碼錯誤</div>
+    </div>
+  </div>
+</div>
+
+<!-- 教師看板 -->
+<div id="st" class="screen">
+  <div class="bar bar-t">
+    <div class="icon">👩‍🏫</div>
+    <div class="f1">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="ttl">教師成績管理</div>
+        <button class="bk" onclick="go('sw')">← 返回</button>
+      </div>
+      <div class="sub">南一六下 第7–9課 補救教學測驗</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="tc">
+      <h3>🔍 篩選條件</h3>
+      <div class="tf">
+        <select id="t-cls">
+          <option value="">所有班級</option>
+          <option>六年一班</option><option>六年二班</option><option>六年三班</option>
+          <option>六年四班</option><option>六年五班</option><option>六年六班</option>
+          <option>六年七班</option><option>六年八班</option><option>六年九班</option>
+          <option>六年十班</option>
+        </select>
+        <button onclick="loadT()">🔄 載入資料</button>
+        <span id="tspin" style="display:none;font-size:13px;color:var(--texth)"><span class="spin"></span>載入中...</span>
+      </div>
+      <div id="tnote" style="font-size:12px;color:var(--texth);margin-top:4px"></div>
+      <div class="tst" id="tstat"></div>
+    </div>
+    <div class="tc"><h3>📋 學生作答記錄</h3><div id="tlist"></div></div>
+    <div class="tc"><h3>🎯 各大題弱點分析</h3><div id="tweak"></div></div>
+    <div class="tc"><h3>📌 補救教學建議</h3><div id="tremed"></div></div>
+  </div>
+</div>
+
+<script>
+// Firebase 設定從外部 firebase-config.js 載入，本檔不含 API Key
+const TEACHER_PWD = "teacher123";
+const COLLECTION  = "chineseRemedy_nanyi_6b_7to9";
+let db=null,useFB=false;
+function initFB(){
+  const c=(typeof FIREBASE_CONFIG!=='undefined')?FIREBASE_CONFIG:null;
+  if(!c||!c.apiKey)return;
+  try{if(!firebase.apps.length)firebase.initializeApp(c);db=firebase.firestore();useFB=true;}catch(e){}
+}
+
+// ══ 補救建議 ══════════════════════════════
+const REMEDY={
+  '一、改錯字':'改錯字需熟記字形。建議讓學生針對答錯的字，各造一個句子並抄寫三遍，同時整理「易混字對照表」（如：扉↔非、矩↔距、稔↔忍），每週默寫加強記憶。',
+  '二、閱讀測驗':'閱讀測驗的得分關鍵是「回到文本」。建議教學生圈出每段主旨句，並練習「刪除法」——將明顯錯誤的選項先刪去，再從剩餘選項比較最符合題意的答案。',
+  '三、成語測驗':'成語理解需結合情境。建議讓學生為每個成語各找一個日常生活情境，並製作成語小卡（正面寫成語，背面寫解釋＋例句）。填空題要特別練習判斷句子語境再選詞。',
+};
+
+// ══ 改錯字答案（正確字，對應①–⑳）══════════
+// 文本中的錯字與正確字對應：
+// ①扉(非→扉) ②俠(俠→狹) ③籬(籬→離) ④默(默→莫→寂寞的「莫」)
+// ⑤墩(墩→敦) ⑥距(距→矩) ⑦忍(忍→稔) ⑧慇(慇→殷)
+// ⑨沮(沮→咀) ⑩瀰(瀰→彌) ⑪得(得→德) ⑫臟(臟→藏)
+// ⑬擎(擎→摯) ⑭策(策→冊) ⑮淘(淘→濤) ⑯回(回→迴)
+// ⑰囑(囑→正確，叮囑的囑) ⑱慰(慰→蔚) ⑲欄(欄→檻) ⑳頌(頌→誦)
+const TYPO_ANS=['扉','狹','離','莫','敦','矩','稔','殷','咀','彌','德','藏','摯','冊','濤','迴','囑','蔚','檻','誦'];
+// 對應文本中出現的錯字（顯示用）
+const TYPO_WRONG=['非','俠','籬','默','墩','距','忍','慇','沮','瀰','得','臟','擎','策','淘','回','咐','慰','欄','頌'];
+
+// ══ 閱讀測驗（兩篇文學名著節選）═══════════
+// 閱讀（一）：改寫自《小王子》
+const PASS1=`　　那天傍晚，小王子終於問了我。他說：「你要求你的羊去吃一株玫瑰花，卻在我的星球上，只有一株玫瑰。」
+　　我很清楚地記得，他的臉色非常嚴肅，沉默了好一會兒，他又說：「如果有人愛上了一株花，而這株花生長在遙遠的星球上，那這個人在夜晚仰望星空時，心裡便充滿了幸福。他想，我的花在那裡……但如果羊把花吃了，那麼，對他而言，所有的星星就像是突然間全都熄滅了一樣。你認為這是不重要的事嗎？」
+　　他再也說不下去了。他突然哭了起來。夜幕降臨。我放下了手邊的工具，對於圖紙、螺帽、口渴，還有死亡，我什麼都不在乎了。我只有一顆星星，一個小行星，在這個星球上有一個我需要安慰的小孩。我把他摟進懷中，搖晃著他，輕聲對他說：「你愛的那株花並不危險……我替你的羊……」我其實並不太確定應該說什麼。我覺得自己非常笨拙。我不知道怎樣才能追上他，怎樣才能讓他再感受到我的心意……原來，眼淚之鄉，是如此難以捉摸。`;
+
+const READ1=[
+  {q:'在本文中，小王子哭泣的主要原因是什麼？',opts:['因為迷路找不到回家的路','擔心羊把星球上唯一的玫瑰吃掉','對方不理解他說的話','旅途中口渴而且精疲力盡'],ans:1,exp:'文中小王子說「如果有人愛上了一株花……如果羊把花吃了，所有的星星就像突然全都熄滅了」，他是為擔心心愛的玫瑰被羊吃掉而哭泣。'},
+  {q:'「所有的星星就像是突然間全都熄滅了一樣」這句話使用了哪一種修辭？',opts:['排比','擬人','譬喻','設問'],ans:2,exp:'把「失去玫瑰的世界」比喻成「所有星星突然熄滅」，用「就像是」連接本體與喻體，為譬喻法。'},
+  {q:'文末「眼淚之鄉，是如此難以捉摸」最可能表達的意涵為何？',opts:['「我」無法找到小王子回去的路','眼淚是一個遙遠的地方','「我」不知道如何理解和撫慰他人內心深處的悲傷','小王子的星球離地球很遠'],ans:2,exp:'「眼淚之鄉」象徵他人內心的悲傷與情感世界，「難以捉摸」表示「我」無法真正理解和撫慰那深切的悲傷。'},
+];
+
+// 閱讀（二）：改寫自《老人與海》
+const PASS2=`　　那條魚拖著老人和他的小船，朝著西北方向而去，不停地往深海駛去。老人緊緊抓住魚線，任它勒進手掌，而那種疼痛對他而言，已經不算什麼了。
+　　他想到那孩子。「要是那孩子在這裡就好了，」他想，「讓他看著我，也讓我不那麼孤單。」但孩子不在，他只能獨自一人。他盯著那條深入水下、不可見底的魚線，心裡清楚這條魚有多麼巨大，有多麼強壯，而他自己則是那麼疲憊。
+　　他繼續用力撐著，讓自己不去想手上的疼痛，不去想眼皮的沉重，只是繼續做他應該做的事。他反覆告訴自己：「我能撐下去。人可以被摧毀，但不能被打敗。」這句話彷彿成了他前進的力量，讓他在每一個即將放棄的瞬間，都能再次站穩腳步。`;
+
+const READ2=[
+  {q:'老人在海上希望孩子能陪伴他，主要是因為什麼？',opts:['孩子的力氣比他大，可以幫忙拉魚線','孩子能讓他不那麼孤單','孩子知道怎麼處理這條大魚','孩子帶了食物和水'],ans:1,exp:'文中老人心想「讓他看著我，也讓我不那麼孤單」，說明老人希望孩子陪伴的原因是不想感到孤單。'},
+  {q:'「人可以被摧毀，但不能被打敗」這句話表達了什麼精神？',opts:['人要知道何時放棄','身體雖然可能垮掉，但意志不能屈服','勝利比努力更重要','老人相信自己一定能捕到那條魚'],ans:1,exp:'「被摧毀」指身體或物質上的損傷，「被打敗」指精神與意志的屈服。這句話強調肉體雖可受傷，但意志絕不妥協的精神。'},
+];
+
+const READ_ALL=[...READ1,...READ2];
+
+// ══ 成語測驗（10題）═════════════════════════
+const IDIOM=[
+  // 意思選擇 1–4
+  {q:'「忠言逆耳」的意思最接近下列何者？',opts:['忠心的話聽起來很刺耳，但對人有益','忠實地轉述別人說的話','忠誠的人說話很有禮貌','用諷刺的語言批評別人'],ans:0,sub:'意思選擇',exp:'「忠言逆耳」指誠懇的規勸雖然不好聽，但對人很有益處，選 A。'},
+  {q:'「欲蓋彌彰」的意思最接近下列何者？',opts:['用力蓋住錯誤，終究成功','越想掩蓋過失，反而暴露得越明顯','說話小聲，讓別人聽不清楚','努力蓋房子，讓大家都看得見'],ans:1,sub:'意思選擇',exp:'「欲蓋彌彰」指越想遮掩，反而越加暴露，選 B。'},
+  {q:'「老驥伏櫪」用來形容什麼？',opts:['老馬趴在木槽旁睡覺，十分懶惰','老年人雖已年邁，仍然胸懷壯志','老人騎馬馳騁，身手矯健','馬匹老了就應該退休休息'],ans:1,sub:'意思選擇',exp:'「老驥伏櫪，志在千里」比喻年老仍有遠大志向，選 B。'},
+  {q:'「諱疾忌醫」比喻哪種行為？',opts:['生病了不肯接受治療','生病了非常害怕打針','看到醫生就感到忌妒','生病卻忘記去看醫生'],ans:0,sub:'意思選擇',exp:'「諱疾忌醫」比喻有缺點或錯誤卻不願承認、拒絕接受批評或改正，選 A。'},
+  // 選詞填空 5–8
+  {q:'小傑雖然很想反駁，但老師說的話都是「____」，他只好沉默地接受。',opts:['欲蓋彌彰','忠言逆耳','蔚然成風','老驥伏櫪'],ans:1,sub:'選詞填空',exp:'「忠言逆耳」指真誠的建議雖然不好聽，符合老師說的話讓小傑難以接受卻有益的情境，選 B。'},
+  {q:'每當運動會，全校師生齊心為選手加油的情景，已經「____」，成為學校最美好的傳統。',opts:['老驥伏櫪','忠言逆耳','蔚然成風','顧影自憐'],ans:2,sub:'選詞填空',exp:'「蔚然成風」指某種行為逐漸普遍形成風尚，符合全校加油已成傳統的情境，選 C。'},
+  {q:'外婆雖已八十歲，每天仍堅持練書法、學電腦，真是「____」，令人敬佩。',opts:['顧影自憐','諱疾忌醫','欲蓋彌彰','老驥伏櫪'],ans:3,sub:'選詞填空',exp:'「老驥伏櫪」比喻年老志壯，符合外婆八十歲仍持續學習的情境，選 D。'},
+  {q:'他面對失誤，卻不停辯解，越說越多，真是「____」，反而讓大家更懷疑他。',opts:['蔚然成風','欲蓋彌彰','老驥伏櫪','忠言逆耳'],ans:1,sub:'選詞填空',exp:'「欲蓋彌彰」指越解釋越暴露，符合越辯解越讓人懷疑的情境，選 B。'},
+  // 辨別用法 9–10
+  {q:'小文身體不舒服卻一直「顧影自憐」，不肯去看醫生，大家都為他擔心。\n此句「顧影自憐」用法是否正確？',opts:['正確（○）','錯誤（✕），應改用「諱疾忌醫」','錯誤（✕），應改用「欲蓋彌彰」','錯誤（✕），應改用「不厭其煩」'],ans:1,sub:'辨別用法',exp:'「顧影自憐」指自我憐憫、感嘆身世；此句語意是不肯就醫，應用「諱疾忌醫」，選 B（✕→諱疾忌醫）。'},
+  {q:'媽媽「不厭其煩」地一遍又一遍教導弟弟寫功課，從不嫌麻煩。\n此句「不厭其煩」用法是否正確？',opts:['正確（○）','錯誤（✕），應改用「忠言逆耳」','錯誤（✕），應改用「顧影自憐」','錯誤（✕），應改用「老驥伏櫪」'],ans:0,sub:'辨別用法',exp:'「不厭其煩」指不嫌麻煩、耐心重複，此句用法完全正確，選 A（○）。'},
+];
+
+// ══ 狀態 ═════════════════════════════════
+let stu={},typoA=[],rdA=[],idA=[];
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function startExam(){
+  const cls=document.getElementById('icls').value,seat=document.getElementById('iseat').value;
+  if(!cls){alert('請選擇班級！');return;}
+  if(!seat){alert('請輸入座號！');return;}
+  stu={cls,seat,time:new Date().toLocaleString('zh-TW')};
+  document.getElementById('exam-info').textContent=`${cls} ${seat}號`;
+  buildExam();go('se');
+}
+
+function mkSec(bg,color,icon,title,score){
+  const s=document.createElement('div');s.className='secb';
+  s.innerHTML=`<div class="sech" style="background:${bg}"><span class="si">${icon}</span><div><div class="st" style="color:${color}">${title}</div><div class="ss" style="color:${color}">${score}</div></div></div><div class="secbd"></div>`;
+  return s;
+}
+function mkMCQ(num,q,ansArr,idx,color){
+  const b=document.createElement('div');b.className='qb';
+  b.innerHTML=`<div class="qn" style="color:${color}">第 ${num} 題</div><div class="qt">${q.q.replace(/\n/g,'<br>')}</div>`;
+  const opts=document.createElement('div');opts.className='opts';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');btn.className='ob';
+    btn.innerHTML=`<span class="ol" style="color:${color}">${['Ａ','Ｂ','Ｃ','Ｄ'][i]}．</span><span>${o}</span>`;
+    btn.onclick=()=>{
+      if(ansArr[idx]!==-1)return;
+      ansArr[idx]=i;
+      opts.querySelectorAll('.ob').forEach(x=>x.classList.add('dim'));
+      btn.classList.remove('dim');btn.classList.add('sel');
+      b.classList.add('done');
+    };
+    opts.appendChild(btn);
+  });
+  b.appendChild(opts);return b;
+}
+
+function buildExam(){
+  const body=document.getElementById('exam-body');
+  body.innerHTML='';
+  typoA=new Array(20).fill('');
+  rdA=new Array(5).fill(-1);
+  idA=new Array(10).fill(-1);
+
+  // ── 一、改錯字（20題）──────────────────────
+  const s1=mkSec('#fdf2f8','#9d174d','✏️','一、改錯字','共20題，每題3分，合計60分');
+  const sb1=s1.querySelector('.secbd');
+
+  // 說明
+  const instr=document.createElement('p');
+  instr.style.cssText='font-size:13px;color:#9d174d;margin-bottom:10px;font-weight:600';
+  instr.textContent='📌 下文共有 20 個錯字，請仔細閱讀後找出錯字，並在下方答題欄依序填入正確的字。（提示：錯字融入文章中，請逐字審閱。）';
+  sb1.appendChild(instr);
+
+  // 閱讀文本（含20個錯字）
+  const pass=document.createElement('div');
+  pass.className='typass';
+  pass.innerHTML=`
+<p>　　青春的歲月裡，每個人的心中或許都曾有過一段灰暗的時光。那時候，我緊緊關閉著自己的心非，將自己囚禁在一個俠小的個人世界裡。面對班上的新同學，我與他們之間總帶著一種難以言喻的疏籬感，下課時任由無邊的寂默將我吞噬。</p>
+<p>　　直到遇見了阿翔，他是一個性格極為墩厚的男孩，從不讓人感到壓力。在師長眼中，我只是個循規蹈距的平凡學生，然而阿翔卻以一種難得的慇勤與熱情對待每一個人。透過幾次分組報告，我們逐漸變得熟忍起來。</p>
+<p>　　週末時，我們常跨越圖書館那道高高的門欄，在那裡度過充實的下午。我們坐在空擴曠的公園草地旁，仰望慰藍的天空，幾朵白色的蒲公英在清風中飛舞，那畫面綺麗動人。我們輪流出聲頌讀著散文，細細沮嚼著字裡行間的人生哲理。</p>
+<p>　　阿翔曾告訴我，一個人高尚的得性往往臟伏於日常的細節之中。這段友誼，使我深深感受到瀰足珍貴的真情，阿翔成了我最真誠的擎友。</p>
+<p>　　畢業前，我們互相交換紀念策，寫下珍重的祝福。離別前夕，阿翔語重心長地叮咐我，要勇敢面對未來。那些溫暖的話語，一直回盪在我的心間，成了如波淘般洶湧而又溫柔的記憶。</p>`;
+  sb1.appendChild(pass);
+
+  const lbl=document.createElement('p');
+  lbl.style.cssText='font-size:13px;font-weight:700;color:#9d174d;margin-bottom:8px';
+  lbl.textContent='✏️ 答題欄（每格請填入一個正確字）：';
+  sb1.appendChild(lbl);
+
+  const tg=document.createElement('div');tg.className='tg';
+  for(let i=0;i<20;i++){
+    const item=document.createElement('div');item.className='ti';
+    const num=document.createElement('span');num.className='tn';
+    num.textContent=`${'①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳'[i]} 正確字：`;
+    const inp=document.createElement('input');inp.className='ti2';inp.maxLength=1;inp.placeholder='　';
+    inp.addEventListener('input',()=>{typoA[i]=inp.value.trim();});
+    item.appendChild(num);item.appendChild(inp);tg.appendChild(item);
+  }
+  sb1.appendChild(tg);
+  body.appendChild(s1);
+
+  // ── 二、閱讀測驗（5題）────────────────────
+  const s2=mkSec('#eff6ff','#1d4ed8','📚','二、閱讀測驗','兩篇文學名著節選，共5題，每題2分，合計10分');
+  const sb2=s2.querySelector('.secbd');
+
+  // 文章一
+  const ph1=document.createElement('div');
+  ph1.style.cssText='margin-bottom:6px;font-size:12.5px;font-weight:700;color:#1d4ed8';
+  ph1.textContent='【文本一】節錄自《小王子》（聖艾修伯里著）';
+  sb2.appendChild(ph1);
+  const p2=document.createElement('div');
+  p2.style.cssText="font-family:'Noto Serif TC',serif;font-size:14px;line-height:2.05;padding:12px 15px;background:#fafafa;border-radius:8px;border-left:3px solid #1d4ed8;margin-bottom:14px";
+  p2.innerHTML=PASS1.replace(/\n/g,'<br>');
+  sb2.appendChild(p2);
+
+  READ1.forEach((q,i)=>sb2.appendChild(mkMCQ(i+1,q,rdA,i,'#1d4ed8')));
+
+  // 文章二
+  const ph2=document.createElement('div');
+  ph2.style.cssText='margin:16px 0 6px;font-size:12.5px;font-weight:700;color:#1d4ed8';
+  ph2.textContent='【文本二】節錄自《老人與海》（海明威著）';
+  sb2.appendChild(ph2);
+  const p3=document.createElement('div');
+  p3.style.cssText="font-family:'Noto Serif TC',serif;font-size:14px;line-height:2.05;padding:12px 15px;background:#fafafa;border-radius:8px;border-left:3px solid #1d4ed8;margin-bottom:14px";
+  p3.innerHTML=PASS2.replace(/\n/g,'<br>');
+  sb2.appendChild(p3);
+
+  READ2.forEach((q,i)=>sb2.appendChild(mkMCQ(i+4,q,rdA,i+3,'#1d4ed8')));
+  body.appendChild(s2);
+
+  // ── 三、成語測驗（10題）────────────────────
+  const s3=mkSec('#fef3c7','#92400e','📚','三、成語測驗','共10題，每題3分，合計30分（意思選擇×4、選詞填空×4、辨別用法×2）');
+  const sb3=s3.querySelector('.secbd');
+
+  const vb=document.createElement('div');
+  vb.style.cssText='background:#fef9ec;border:1.5px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;line-height:1.9';
+  vb.innerHTML='<b style="color:#92400e">第七課：</b>狹路相逢、顧影自憐、攀龍附鳳、欲蓋彌彰<br><b style="color:#92400e">第八課：</b>不厭其煩、諱疾忌醫、出言不遜、老驥伏櫪<br><b style="color:#92400e">第九課：</b>蔚然成風、心曠神怡、忠言逆耳、過目成誦';
+  sb3.appendChild(vb);
+
+  [['（一）意思選擇（第1–4題）',0,4],['（二）選詞填空（第5–8題）',4,4],['（三）辨別用法（第9–10題）',8,2]].forEach(([lbl,start,cnt])=>{
+    const hd=document.createElement('p');hd.style.cssText='font-size:13.5px;font-weight:700;color:#92400e;margin:14px 0 8px';hd.textContent=lbl;sb3.appendChild(hd);
+    for(let i=start;i<start+cnt;i++) sb3.appendChild(mkMCQ(i+1,IDIOM[i],idA,i,'#92400e'));
+  });
+  body.appendChild(s3);
+}
+
+// ══ 提交 ══════════════════════════════════
+async function submitExam(){
+  // 改錯字允許空白，不強制全填（答對多少得多少）
+  const re=rdA.filter(a=>a===-1).length,ie=idA.filter(a=>a===-1).length;
+  if(re||ie){
+    let m='❗ 以下題目尚未作答：\n';
+    if(re)m+=`・二、閱讀測驗：${re}題未選\n`;
+    if(ie)m+=`・三、成語測驗：${ie}題未選\n`;
+    alert(m+'請完成後再提交。');return;
+  }
+  let s1=0,s2=0,s3=0;
+  // 改錯字：不按順序，答案池比對
+  // 建立可用答案池（去除空白後比對，每字只能被對應一次）
+  const ansPool=[...TYPO_ANS];
+  const td=typoA.map((a,i)=>{
+    const val=a.trim();
+    if(!val) return{a:'',ok:false,cor:'（未填）',wrong:TYPO_WRONG[i]};
+    const pi=ansPool.indexOf(val);
+    if(pi!==-1){
+      ansPool.splice(pi,1); // 從池中移除，避免重複算分
+      s1+=3;
+      return{a:val,ok:true,cor:val,wrong:TYPO_WRONG[i]};
+    }
+    return{a:val,ok:false,cor:'（請重新確認）',wrong:TYPO_WRONG[i]};
+  });
+  const rd=rdA.map((a,i)=>{const ok=a===READ_ALL[i].ans;if(ok)s2+=2;return{a,ok,cor:READ_ALL[i].ans};});
+  const idd=idA.map((a,i)=>{const ok=a===IDIOM[i].ans;if(ok)s3+=3;return{a,ok,cor:IDIOM[i].ans,sub:IDIOM[i].sub};});
+  const tot=s1+s2+s3;
+
+  document.getElementById('r-name').textContent=`${stu.cls} ${stu.seat}號 ｜ ${stu.time}`;
+  document.getElementById('snum').textContent=tot;
+  document.getElementById('sring').className='srg '+(tot>=80?'rh':tot>=60?'rm':'rl');
+  const msgs=tot>=80?['🌟 表現優秀！','三大題均掌握良好！']:tot>=60?['👍 繼續加油！','部分概念需要再複習。']:['💪 需要加強！','建議老師安排補救教學。'];
+  document.getElementById('smsg').textContent=msgs[0];document.getElementById('ssub').textContent=msgs[1];
+  // 顯示改錯字得分（答對X題 × 3分）
+  const typoCorrect=td.filter(d=>d.ok).length;
+  document.getElementById('r1').textContent=`${s1}/60（答對${typoCorrect}字）`;
+  document.getElementById('r2').textContent=s2+'/10';
+  document.getElementById('r3').textContent=s3+'/30';
+
+  const det=document.getElementById('r-detail');det.innerHTML='';
+  const ABCD=['Ａ','Ｂ','Ｃ','Ｄ'];
+  const NUMS='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳';
+
+  [{name:'一、改錯字',color:'#9d174d',items:td.map((d,i)=>({
+      q:`格${NUMS[i]}　你填：「${d.a||'（空白）'}」`,
+      ok:d.ok,
+      your:d.a?`「${d.a}」`:'（未填）',
+      right:d.ok?`✓ 答對`:`「${TYPO_WRONG[i]}」→「${TYPO_ANS[i]}」`,
+      exp:d.ok?`答對了！「${d.a}」是正確字之一。`:(d.a?`「${d.a}」不在答案列表中，20個正確字為：${TYPO_ANS.join('、')}`:'此格未填寫。'),
+      pt:3
+    }))},
+   {name:'二、閱讀測驗',color:'#1d4ed8',items:rd.map((d,i)=>({q:READ_ALL[i].q,ok:d.ok,your:d.a>=0?ABCD[d.a]+'．'+READ_ALL[i].opts[d.a]:'未選',right:ABCD[d.cor]+'．'+READ_ALL[i].opts[d.cor],exp:READ_ALL[i].exp,pt:2}))},
+   {name:'三、成語測驗',color:'#92400e',items:idd.map((d,i)=>({q:IDIOM[i].q,ok:d.ok,your:d.a>=0?ABCD[d.a]+'．'+IDIOM[i].opts[d.a]:'未選',right:ABCD[d.cor]+'．'+IDIOM[i].opts[d.cor],exp:IDIOM[i].exp,pt:3}))},
+  ].forEach(sec=>{
+    const hd=document.createElement('div');hd.className='rh2';
+    hd.innerHTML=`<span style="width:4px;height:15px;border-radius:2px;background:${sec.color};display:inline-block"></span>${sec.name}`;
+    det.appendChild(hd);
+    const card=document.createElement('div');card.className='rc';
+    sec.items.forEach((it,i)=>{
+      const item=document.createElement('div');item.className='ri';
+      item.innerHTML=`<div class="riq"><b>第${i+1}題：</b>${it.q.replace(/\n/g,'<br>').slice(0,50)}${it.q.length>50?'…':''}</div>
+        <div class="ria"><span class="tpt">${it.pt}分</span><span class="${it.ok?'tok':'tng'}">${it.ok?'✅ '+it.your:'✗ '+it.your}</span>${!it.ok?`<span style="color:var(--texth)">→</span><span class="tok">✓ ${it.right}</span>`:''}</div>
+        <div class="rex">📝 ${it.exp}</div>`;
+      card.appendChild(item);
+    });
+    det.appendChild(card);
+  });
+
+  const rec={cls:stu.cls,seat:parseInt(stu.seat),timestamp:useFB?firebase.firestore.FieldValue.serverTimestamp():null,localTime:stu.time,totalScore:tot,s1,s2,s3,
+    typoDetail:td.map(d=>({a:d.a,ok:d.ok})),rdDetail:rd.map(d=>({a:d.a,ok:d.ok})),idDetail:idd.map(d=>({a:d.a,ok:d.ok,sub:d.sub}))};
+  const se=document.getElementById('upst');
+  if(useFB){try{await db.collection(COLLECTION).add(rec);se.textContent='✅ 作答記錄已上傳雲端，老師可在教師看板查閱';se.className='fbs ok';se.style.display='block';}
+    catch(e){se.textContent='⚠️ 雲端上傳失敗，已儲存本機';se.className='fbs err';se.style.display='block';saveLoc(rec);}}
+  else{se.style.display='none';saveLoc(rec);}
+  go('sr');
+}
+
+function saveLoc(r){const a=JSON.parse(localStorage.getItem('chRemedy')||'[]');a.push(r);localStorage.setItem('chRemedy',JSON.stringify(a));}
+
+// ══ 教師看板 ══════════════════════════════
+function doLogin(){
+  if(document.getElementById('t-pwd').value===TEACHER_PWD){
+    document.getElementById('lerr').style.display='none';document.getElementById('t-pwd').value='';go('st');loadT();
+  }else document.getElementById('lerr').style.display='block';
+}
+
+async function loadT(){
+  const cls=document.getElementById('t-cls').value;
+  const spin=document.getElementById('tspin'),note=document.getElementById('tnote');
+  spin.style.display='inline';
+  let recs=[];
+  if(useFB){
+    note.textContent='📡 資料來源：Firebase 雲端';
+    try{let q=db.collection(COLLECTION).orderBy('timestamp','desc').limit(500);if(cls)q=db.collection(COLLECTION).where('cls','==',cls).orderBy('timestamp','desc').limit(500);const sn=await q.get();recs=sn.docs.map(d=>({id:d.id,...d.data()}));}
+    catch(e){note.textContent='⚠️ 雲端失敗，顯示本機資料';recs=getLoc(cls);}
+  }else{note.textContent='💾 本機模式（請確認 firebase-config.js 在同目錄）';recs=getLoc(cls);}
+  spin.style.display='none';
+  renderT(recs,cls);
+}
+function getLoc(cls){const a=JSON.parse(localStorage.getItem('chRemedy')||'[]');return cls?a.filter(r=>r.cls===cls):a;}
+
+function renderT(recs,cls){
+  const stat=document.getElementById('tstat');
+  if(recs.length){
+    const avg=(recs.reduce((s,r)=>s+r.totalScore,0)/recs.length).toFixed(1);
+    const hi=recs.filter(r=>r.totalScore>=80).length,lo=recs.filter(r=>r.totalScore<60).length;
+    const a1=(recs.reduce((s,r)=>s+(r.s1||0),0)/recs.length).toFixed(1);
+    const a2=(recs.reduce((s,r)=>s+(r.s2||0),0)/recs.length).toFixed(1);
+    const a3=(recs.reduce((s,r)=>s+(r.s3||0),0)/recs.length).toFixed(1);
+    stat.innerHTML=`<div class="tsb"><div class="sv">${recs.length}</div><div class="sl">作答人數</div></div><div class="tsb"><div class="sv">${avg}</div><div class="sl">總平均</div></div><div class="tsb"><div class="sv">${hi}</div><div class="sl">80分以上</div></div><div class="tsb"><div class="sv">${lo}</div><div class="sl">60分以下</div></div><div class="tsb" style="grid-column:span 2"><div class="sv" style="font-size:13px;line-height:1.7">${a1}/60　${a2}/10　${a3}/30</div><div class="sl">各大題平均（一改錯字 / 二閱讀 / 三成語）</div></div>`;
+  }else stat.innerHTML='';
+
+  const tl=document.getElementById('tlist');
+  tl.innerHTML=!recs.length?`<div class="emp">📭 尚無作答記錄${cls?' ('+cls+')':''}</div>`:
+    recs.map(r=>{const c=r.totalScore>=80?'#178a56':r.totalScore>=60?'#b87010':'#c82828';const bg=r.totalScore>=80?'#e7f6ef':r.totalScore>=60?'#fdf3e0':'#fdeaea';const t=r.localTime||(r.timestamp?.toDate?r.timestamp.toDate().toLocaleString('zh-TW'):'');
+    return `<div class="srr"><div class="av">${r.cls?r.cls.replace('六年','6/').replace('班',''):''}</div><div class="si3"><div class="nm">${r.cls} ${r.seat}號</div><div class="mt">${t}　一:${r.s1||0} 二:${r.s2||0} 三:${r.s3||0}</div></div><div class="bdg" style="color:${c};background:${bg}">${r.totalScore}分</div></div>`;
+    }).join('')+(!useFB?'<button class="bclr" onclick="clrLoc()">清除本機記錄</button>':'');
+
+  const tw=document.getElementById('tweak');
+  if(!recs.length){tw.innerHTML='<div class="emp">暫無資料</div>';return;}
+  const secs=[{name:'一、改錯字',get:r=>r.s1||0,max:60,color:'#9d174d'},{name:'二、閱讀測驗',get:r=>r.s2||0,max:10,color:'#1d4ed8'},{name:'三、成語測驗',get:r=>r.s3||0,max:30,color:'#92400e'}];
+  tw.innerHTML=`<div style="font-size:12px;color:var(--texth);margin-bottom:10px">共 ${recs.length} 筆${cls?' ('+cls+')':''}</div>`+
+    secs.map(s=>{const avg=recs.reduce((a,r)=>a+s.get(r),0)/recs.length;const pct=Math.round(avg/s.max*100);const col=pct>=80?'#178a56':pct>=60?'#b87010':'#c82828';
+    return `<div class="wb"><div class="wbr"><span style="font-size:13px;font-weight:700;color:${s.color}">${s.name}</span><span style="color:${col};font-weight:700">平均 ${avg.toFixed(1)} 分（${pct}%）</span></div><div class="wbb"><div class="wbf" style="width:${pct}%;background:${col}"></div></div></div>`;}).join('');
+
+  const tr=document.getElementById('tremed');
+  const sorted=[...secs].map(s=>({name:s.name,pct:Math.round(recs.reduce((a,r)=>a+s.get(r),0)/recs.length/s.max*100)})).sort((a,b)=>a.pct-b.pct);
+  tr.innerHTML='<div style="margin-bottom:10px;font-size:13.5px;line-height:1.8">依得分率分析，建議優先補救：</div>'+
+    sorted.map((s,i)=>`<div class="rmb"><b>${['🥇','🥈','🥉'][i]} 優先補救：${s.name}</b>（得分率 ${s.pct}%）<br>${REMEDY[s.name]||'建議安排針對性練習。'}</div>`).join('');
+}
+
+function clrLoc(){if(confirm('確定清除所有本機記錄？')){localStorage.removeItem('chRemedy');loadT();}}
+function resetAll(){document.getElementById('icls').value='';document.getElementById('iseat').value='';go('sw');}
+
+window.addEventListener('load',()=>{
+  initFB();go('sw');
+  const url=window.location.href;
+  document.getElementById('qrurl').textContent=url.length>55?url.slice(0,55)+'…':url;
+  if(typeof QRCode!=='undefined') new QRCode(document.getElementById('qrbox'),{text:url,width:128,height:128,colorDark:'#7c3aed',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+});
+</script>
+</body>
+</html>
