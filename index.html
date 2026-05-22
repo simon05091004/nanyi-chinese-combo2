@@ -6,7 +6,6 @@
 <title>南一六下國語補救教學測驗｜第7–9課</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="firebase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.min.js"></script>
 <style>
@@ -294,14 +293,26 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
 </div>
 
 <script>
-// Firebase 設定從外部 firebase-config.js 載入，本檔不含 API Key
+// Firebase 設定已直接內嵌（math-5-6 專案）
 const TEACHER_PWD = "teacher123";
 const COLLECTION  = "chineseRemedy_nanyi_6b_7to9";
 let db=null,useFB=false;
 function initFB(){
-  const c=(typeof FIREBASE_CONFIG!=='undefined')?FIREBASE_CONFIG:null;
-  if(!c||!c.apiKey)return;
-  try{if(!firebase.apps.length)firebase.initializeApp(c);db=firebase.firestore();useFB=true;}catch(e){}
+  try{
+    const c={
+      apiKey:"AIzaSyC9lemHX8VEk7DiszkanLWGZjXB4TlCJKs",
+      authDomain:"math-5-6.firebaseapp.com",
+      projectId:"math-5-6",
+      storageBucket:"math-5-6.firebasestorage.app",
+      messagingSenderId:"791241827089",
+      appId:"1:791241827089:web:d33aec52c2bd1f59b322b0",
+      measurementId:"G-EW3ZB5YZKW"
+    };
+    if(!firebase.apps.length)firebase.initializeApp(c);
+    db=firebase.firestore();
+    useFB=true;
+  }catch(e){console.error('Firebase:',e);}
+}
 }
 
 // ══ 補救建議 ══════════════════════════════
@@ -590,7 +601,7 @@ async function loadT(){
     note.textContent='📡 資料來源：Firebase 雲端';
     try{let q=db.collection(COLLECTION).orderBy('timestamp','desc').limit(500);if(cls)q=db.collection(COLLECTION).where('cls','==',cls).orderBy('timestamp','desc').limit(500);const sn=await q.get();recs=sn.docs.map(d=>({id:d.id,...d.data()}));}
     catch(e){note.textContent='⚠️ 雲端失敗，顯示本機資料';recs=getLoc(cls);}
-  }else{note.textContent='💾 本機模式（請確認 firebase-config.js 在同目錄）';recs=getLoc(cls);}
+  }else{note.textContent='💾 本機模式（Firebase 未連線）';recs=getLoc(cls);}
   spin.style.display='none';
   renderT(recs,cls);
 }
